@@ -39,7 +39,7 @@
    <script>
       function moveToDetail(i_board) {
          console.log("moveToDetail = i_board: " + i_board)
-         location.href = "boardDetail?i_board=" + i_board
+         location.href = "BoardDetail?i_board=" + i_board
       }
    </script>
 </body>
