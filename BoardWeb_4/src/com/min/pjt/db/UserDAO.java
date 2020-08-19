@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import com.min.pjt.vo.UserVO;
 
 public class UserDAO {
+	
 	public static int insUser(UserVO param) {
 		
 		String sql = "INSERT INTO t_user"
@@ -16,29 +17,26 @@ public class UserDAO {
 		
 		return JdbcTemplate.executeUpdate(sql, new JdbcUpdateInterface() { //interface를 객체화 한것이 아니다.
 			@Override
-			public int update(PreparedStatement ps)  throws SQLException{
-				
+			public void update(PreparedStatement ps)  throws SQLException{
 				ps.setNString(1, param.getUser_id());
 				ps.setNString(2, param.getUser_pw());
 				ps.setNString(3, param.getNm());
 				ps.setNString(4, param.getEmail());
 				
-				return ps.executeUpdate();
+				
 			}
 		});
 	}
 	// 0: 에러발생, 1:로그인 성공, 2: 비밀번호 틀림, 3: 아이디없음
-	public static int selUser(UserVO param) { //select
-		int result = 0;
+	public static int login(UserVO param) { //select
 		String sql = " select i_user, user_pw, nm"
 					+ " from t_user "
 					+ " where user_id = ? ";
 		
 		return JdbcTemplate.executeQuery(sql, new JdbcSelectInterface() {
 			@Override
-			public ResultSet prepared(PreparedStatement ps) throws SQLException {
+			public void prepared(PreparedStatement ps) throws SQLException {
 				ps.setNString(1, param.getUser_id());
-				return ps.executeQuery();
 			}
 			
 			@Override

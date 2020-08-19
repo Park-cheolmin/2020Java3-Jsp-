@@ -1,5 +1,5 @@
 package com.min.pjt.db;
-
+//공통된 작업을 여기서한다
 import java.sql.*;
 
 public class JdbcTemplate {
@@ -12,8 +12,10 @@ public class JdbcTemplate {
 		try {
 			con = DbCon.getCon();
 			ps = con.prepareStatement(sql);
-			rs = jdbc.prepared(ps);
-			result = jdbc.executeQuery(rs);  //이 부분이 callback이될부분 
+			jdbc.prepared(ps);
+			
+			rs = ps.executeQuery(); 
+			result = jdbc.executeQuery(rs);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -31,7 +33,9 @@ public class JdbcTemplate {
 		try {
 			con = DbCon.getCon();
 			ps = con.prepareStatement(sql);
-			result = jdbc.update(ps);  //이 부분이 callback이될부분 
+			jdbc.update(ps);
+			
+			result =ps.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
