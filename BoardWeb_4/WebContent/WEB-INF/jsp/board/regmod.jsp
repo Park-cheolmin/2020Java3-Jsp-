@@ -9,6 +9,7 @@
 <body>
 	<div>
 		<form id ="frm" action="regmod" method="post"  onsubmit = "return chk()">
+			<div><input type = "hidden" name = "i_board" value = "${data.i_board }"><</div>
 			<div>제목 : <input type = "text" name = "title" value = "${data.title }"></div>
 			<div>내용 : <textarea  name = "ctnt" value = "${data.ctnt }"></textarea></div>
 			<div><input type = "submit" value = "등록"></div>

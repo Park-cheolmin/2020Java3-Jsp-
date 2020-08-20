@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.min.pjt.Const;
+import com.min.pjt.MyUtils;
 import com.min.pjt.ViewResolver;
 import com.min.pjt.db.BoardDAO;
 import com.min.pjt.vo.BoardVO;
@@ -23,14 +24,8 @@ public class BoardRegmodSer extends HttpServlet {
       
 	//화면 띄우는 용도(등록창/수정창)
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession hs = request.getSession();
-		
-		if(null == hs.getAttribute(Const.LOGIN_USER)) {
-			response.sendRedirect("/login");
-			return;
-		}
-	    
-		ViewResolver.forward("board/regmod", request, response);  //여기파일명은 파일명표기 
+
+		ViewResolver.forwardLoginChk("board/regmod", request, response);  // ViewResolver.forward에는  파일명표기 
 	}
 
 
@@ -38,19 +33,25 @@ public class BoardRegmodSer extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String title = request.getParameter("title");
 		String ctnt = request.getParameter("ctnt");
-		
-		HttpSession hs = request.getSession();
-		UserVO loginUser = (UserVO)hs.getAttribute(Const.LOGIN_USER);
+		String strI_board = request.getParameter("i_board");
 		
 		
 		BoardVO param= new BoardVO(); //위에 받은 값을 객체에 담는다
-		param.setTitle(title);
-		param.setCtnt(ctnt);
-		param.setI_user(loginUser.getI_user());
+
+		if(strI_board != "") {
+			param.setI_board(Integer.parseInt(strI_board));
+			param.setTitle(title);
+			param.setCtnt(ctnt);
+		} else {
+			HttpSession hs = request.getSession();
+			UserVO loginUser = MyUtils.getLoginUser(request);
+			param.setTitle(title);
+			param.setCtnt(ctnt);
+			param.setI_user(loginUser.getI_user());
+			int result = BoardDAO.updBoard(param);
+		}
 		
-		int result = BoardDAO.insBoard(param);
 		
-		System.out.println("result : " + result);
 		response.sendRedirect("/board/list");
 		
 	}

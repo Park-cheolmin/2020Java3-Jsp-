@@ -21,19 +21,10 @@ import com.min.pjt.vo.BoardVO;
 public class BoardListSer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession hs = request.getSession();
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {	
 		
-		if(null == hs.getAttribute(Const.LOGIN_USER)) {
-			response.sendRedirect("/login");
-			return;
-		}
-		
-		List<BoardVO> list = BoardDAO.selBoardList();
-		request.setAttribute("data", list);
-	       
-	    
-		ViewResolver.forward("board/list", request, response);
+		request.setAttribute("data", BoardDAO.selBoardList());
+		ViewResolver.forwardLoginChk("board/list", request, response);
 		
 		
 	}
