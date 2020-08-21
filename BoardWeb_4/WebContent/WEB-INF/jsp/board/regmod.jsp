@@ -4,15 +4,20 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>등록/수정</title>
+<title>${data == null? '등록' : '수정' }</title>
+<style>
+	#frm { text-align : center; margin-top: 300px;}
+	.input { font-size : 1.5em;}
+	.submit {  margin-top : 30px;}
+</style>
 </head>
 <body>
-	<div>
+	<div class = " container ">
 		<form id ="frm" action="regmod" method="post"  onsubmit = "return chk()">
-			<div><input type = "hidden" name = "i_board" value = "${data.i_board }"><</div>
-			<div>제목 : <input type = "text" name = "title" value = "${data.title }"></div>
-			<div>내용 : <textarea  name = "ctnt" value = "${data.ctnt }"></textarea></div>
-			<div><input type = "submit" value = "등록"></div>
+			<div><input type = "hidden" name = "i_board" value = "${data.i_board}"></div>
+			<div class = "input">제목 : <input type = "text" name = "title" value = "${data.title}" ></div>
+			<div class = "input">내용 : <textarea  name = "ctnt">${data.ctnt}</textarea></div>
+			<div class = "submit"><input type = "submit" value ="${data == null ? '등록' : '수정' }"></div>
 		</form>
 	</div>
 	<script>

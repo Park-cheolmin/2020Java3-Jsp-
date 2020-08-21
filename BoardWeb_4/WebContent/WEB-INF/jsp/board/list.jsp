@@ -6,23 +6,32 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>리스트</title>
+<title>자유게시판</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
 <style>
-	table {border-collapse: collapse;} 
+	body { font-family: 'Noto Sans KR', sans-serif;}
+	.container {width: 700px; margin : 0 auto;  }
+	table {border-collapse: collapse; width: 700px; margin: 0 auto; } 
 	th, td { border: 1px solid black;  }
+	th { background-color: #FEFAD4; }
 	.itemRow:hover {
       background-color: #ecf0f1;
       cursor: pointer;
    }
+   h1 {fontweight: bold; text-align: center;}
+   .user {width : 100%; text-align: right; }
+
+   a .writebutton {background : #FCD0BA; color:#765D69 ; margin-top : 20px; font-weight : bold; }
+   a .outbutton {background : #FEFAD4; color: #765D69  font-weight : bold;}
 </style>
 </head>
 <body>
 	<div class = "container">
-		<div>${loginUser.nm}님 환영합니다.</div>
-		<div>
-			<a href="/board/regmod">글쓰기</a>
+		<div class = "user">${loginUser.nm}님 환영합니다. <a href="/logout"><button  class = " outbutton ">로그아웃</button></a></div>
+		<div class = "user">
+			<a href="/board/regmod"><button class = " writebutton ">글쓰기</button></a>
 		</div>
-		<h1>리스트</h1>
+		<h1>자유게시판</h1>
 
 			<table>
 				<tr>

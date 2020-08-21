@@ -14,6 +14,7 @@ import com.min.pjt.Const;
 import com.min.pjt.MyUtils;
 import com.min.pjt.ViewResolver;
 import com.min.pjt.db.BoardDAO;
+import com.min.pjt.vo.BoardDomain;
 import com.min.pjt.vo.BoardVO;
 import com.min.pjt.vo.UserVO;
 
@@ -24,7 +25,16 @@ public class BoardRegmodSer extends HttpServlet {
       
 	//화면 띄우는 용도(등록창/수정창)
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String strI_board = request.getParameter("i_board");
+		int i_board = MyUtils.parseStrToInt(strI_board);
+		
+		if(i_board != 0) {//수정
+			request.setAttribute("data", BoardDAO.selBoard(i_board));
+		}
+		
+		
 
+		
 		ViewResolver.forwardLoginChk("board/regmod", request, response);  // ViewResolver.forward에는  파일명표기 
 	}
 
@@ -33,26 +43,39 @@ public class BoardRegmodSer extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String title = request.getParameter("title");
 		String ctnt = request.getParameter("ctnt");
-		String strI_board = request.getParameter("i_board");
+		String strI_board = request.getParameter("i_board"); //request로받으면 어떤 값이든 string으로 넘어온다
+		
+	
+		UserVO loginUser = MyUtils.getLoginUser(request);
+		
+		System.out.println("title: " + title);
+		System.out.println("ctnt: " + ctnt);
 		
 		
 		BoardVO param= new BoardVO(); //위에 받은 값을 객체에 담는다
-
-		if(strI_board != "") {
-			param.setI_board(Integer.parseInt(strI_board));
-			param.setTitle(title);
-			param.setCtnt(ctnt);
-		} else {
-			HttpSession hs = request.getSession();
-			UserVO loginUser = MyUtils.getLoginUser(request);
-			param.setTitle(title);
-			param.setCtnt(ctnt);
-			param.setI_user(loginUser.getI_user());
-			int result = BoardDAO.updBoard(param);
+		param.setTitle(title);
+		param.setCtnt(ctnt);
+		param.setI_user(loginUser.getI_user());
+		int result=0;
+		
+		
+		if(strI_board == "") { //등록
+			result = BoardDAO.insBoard(param);
+			response.sendRedirect("/board/list");
+		} else {	//수정
+			int i_board = MyUtils.parseStrToInt(strI_board);
+			param.setI_board(i_board);
+			result = BoardDAO.updBoard(param);
+			response.sendRedirect("/board/detail?i_board=" + strI_board);
 		}
 		
 		
-		response.sendRedirect("/board/list");
+		
+		System.out.println("result : " + result);
+		
+		
+		
+		
 		
 	}
 

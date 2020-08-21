@@ -10,11 +10,13 @@
 	.container {margin: 0 auto; width: 900px;}
 	table, tr, td, th {border: 1px solid black; border-collapse: collapse;} 
 	.ctnt { width: 400px; }
+	a .listbutton { font-weight : bold;}
+	caption { font-size : 1.5em; margin-bottom : 20px;}
 </style>
 </head>
 <body>
 	<div class = "container">
-		<a href = "/board/list">리스트</a>
+		<a href = "/board/list"><button class ="listbutton">리스트</button></a>
 		<c:if test="${loginUser.i_user == data.i_user }">
 			<a href="/board/regmod?i_board=${data.i_board}">수정</a>
 			<form id="delFrm" action="/board/del" method="post">
