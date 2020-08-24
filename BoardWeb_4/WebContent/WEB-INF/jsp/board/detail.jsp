@@ -24,25 +24,17 @@
 				<a href="#" onclick="submitDel()">삭제</a>
 			</form>			
 		</c:if>
-		<table>
 		<caption>자유게시판</caption>
-			<tr>
-				<th>게시판 번호</th>
-				<th>제목</th>
-				<th>내용</th>
-				<th>작성자</th>
-				<th>작성 날짜</th>
-				<th>조회수</th>
-			</tr>
-			<tr>
-				<td>${data.i_board}</td>
-				<td>${data.title}</td>
-				<td class="ctnt">${data.ctnt}</td>
-				<td>${data.nm}</td>
-				<td>${data.r_dt}</td>
-				<td>${data.hits}</td>
-			</tr>
-		</table>
+			<ul>
+				<li>게시판 번호 : ${data.i_board}</li>
+				<li>제목 : ${data.title}</li>
+				<li class="ctnt">내용 : ${data.ctnt}</li>
+				<li>작성자 : ${data.nm}</li>
+				<li>작성 날짜 : ${data.r_dt}</li>
+				<li>조회수 : ${data.hits}</li>
+				
+			</ul>
+		
 	</div>
 	<script>
 		function submitDel() {
@@ -50,6 +42,10 @@
 			if(chk) {
 				delFrm.submit()
 			}		
+		}
+		
+		function like() {
+			
 		}
 		
 	</script>

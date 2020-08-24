@@ -39,7 +39,7 @@
 					<th>제목</th>
 					<th>조회수</th>
 					<th>유저 번호</th>
-					<th>작성 날짜</th>
+					<th>작성 날짜</th>		
 				</tr>
 				<c:forEach items="${data}" var="item">
 					<tr class="itemRow" onclick="moveDetail(${item.i_board})">

@@ -157,4 +157,34 @@ public class BoardDAO {
 		});
 	}
 	
+	public static BoardVO likeDetailBoard(BoardVO param) {
+		String sql = " SELECT A.i_board, A.title, A.ctnt, A.hits, A.i_user, A.r_dt, B.nm, DECODE(C.i_user, null, 0, 1) as yn_like "
+					+ " FROM t_board4 A "
+					+ " INNER JOIN t_user B "
+					+ " ON A.i_user = B.i_user "
+					+ " LEFT JOIN t_board4_like C "
+					+ " ON A.i_board = C.i_board "
+					+ " AND C.i_user = ? "
+					+ " WHERE A.i_board = ? ";
+		
+		int resultInt = JdbcTemplate.executeQuery(sql, new JdbcSelectInterface() {
+
+			@Override
+			public void prepared(PreparedStatement ps) throws SQLException {
+				ps.setInt(1, param.getI_user());
+				ps.setInt(2, param.getI_board());
+			}
+
+			@Override
+			public int executeQuery(ResultSet rs) throws SQLException {
+				while(rs.next()) {
+					String title = rs.getNString("title");
+					
+				}		
+				return 1;
+			}
+			
+		});
+	}
+	
 }

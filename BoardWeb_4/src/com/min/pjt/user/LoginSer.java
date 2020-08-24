@@ -12,6 +12,7 @@ import com.min.pjt.Const;
 import com.min.pjt.MyUtils;
 import com.min.pjt.ViewResolver;
 import com.min.pjt.db.UserDAO;
+import com.min.pjt.vo.UserLoginHistoryVO;
 import com.min.pjt.vo.UserVO;
 
 @WebServlet("/login")
@@ -58,13 +59,58 @@ public class LoginSer extends HttpServlet {
 			return;	
 		}
 		
+		//----------login 히스토리 기록[start]
+		String agent = request.getHeader("User-Agent");
+		System.out.println("agent : " + agent);
+		String os = getOs(agent);
+		String browser = getBrowser(agent);	
+		String ip_addr = request.getRemoteAddr();
+		
+		System.out.println("os : " + os);
+		System.out.println("browser : " + browser);
+		System.out.println("ip_addr : " + ip_addr);
+		
+		UserLoginHistoryVO ulhVO = new UserLoginHistoryVO(); 
+		ulhVO.setI_user(param.getI_user());
+		ulhVO.setOs(os);
+		ulhVO.setIp_addr(ip_addr);
+		ulhVO.setBrowser(browser);
+		UserDAO.insUserLoginHistory(ulhVO);
+		//------------------login 히스토리 기록[end]
+		
 		HttpSession hs = request.getSession();
 		hs.setAttribute(Const.LOGIN_USER, param);
 		
 		System.out.println("로그인성공");
 		response.sendRedirect("/board/list");
+	}
+	private String getBrowser(String agent) {
+		if(agent.toLowerCase().contains("msie")) {
+			return "ie";
+		} else if(agent.toLowerCase().contains("chrome")) {
+			return "chrome";
+		} else if(agent.toLowerCase().contains("safari")) {
+			return "safari";
+		}
 		
+		return "";
+	}
+	
+	private String getOs(String agent) {
 		
+		if(agent.contains("mac")) {
+			return "mac";	
+		} else if(agent.toLowerCase().contains("windows")) {
+			return "windows";
+		} else if(agent.toLowerCase().contains("x11")) {
+			return "linux";
+		} else if(agent.toLowerCase().contains("android")) {
+			return "android";
+		} else if(agent.toLowerCase().contains("iphone")) {
+			return "iOS";
+		}
+		return "";
+
 	}
 
 }
