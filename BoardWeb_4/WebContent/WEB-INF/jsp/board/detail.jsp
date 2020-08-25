@@ -6,12 +6,22 @@
 <head>
 <meta charset="UTF-8">
 <title>상세페이지</title>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <style>
-	.container {margin: 0 auto; width: 900px;}
-	table, tr, td, th {border: 1px solid black; border-collapse: collapse;} 
-	.ctnt { width: 400px; }
+	.container {margin: 0 auto; width: 700px;}
+	.ctnt { width: 700px; }
 	a .listbutton { font-weight : bold;}
-	caption { font-size : 1.5em; margin-bottom : 20px;}
+	h1 { font-size : 1.5em; widh: 300px; text-align: center;}
+	.material-icons { color: red; }
+	.pointerCursor {cursor: pointer;}
+	.inlineDiv div { display: inline-block; }
+	.time {float : right;}
+	span{
+	background: linear-gradient(to right, #e55d87, #5fc3e4);
+	-webkit-background-clip: text;
+  	-webkit-text-fill-color: transparent;
+  	}
+  	
 </style>
 </head>
 <body>
@@ -24,17 +34,28 @@
 				<a href="#" onclick="submitDel()">삭제</a>
 			</form>			
 		</c:if>
-		<caption>자유게시판</caption>
-			<ul>
-				<li>게시판 번호 : ${data.i_board}</li>
-				<li>제목 : ${data.title}</li>
-				<li class="ctnt">내용 : ${data.ctnt}</li>
-				<li>작성자 : ${data.nm}</li>
-				<li>작성 날짜 : ${data.r_dt}</li>
-				<li>조회수 : ${data.hits}</li>
-				
-			</ul>
 		
+		<br>
+		<h1>자유게시판</h1>
+		<hr>
+		<div class="inlineDiv">제목 : ${data.title}
+			<div class="time">${data.r_dt}</div>
+		</div>
+		<hr>
+		<div class="ctnt">${data.ctnt}</div>
+		<div class="inlineDiv">
+			<div class = "num">게시판 번호 : ${data.i_board}</div>
+		<div>작성자 : ${data.nm}</div>
+		<div>조회수 : ${data.hits}</div>
+		<div class = "pointerCursor" onclick="toggleLike(${data.yn_like})">
+			<c:if test="${data.yn_like == 0 }">
+				<span class="material-icons">favorite_border</span>
+			</c:if>
+			<c:if test="${data.yn_like == 1 }">
+				<span class="material-icons">favorite</span>
+			</c:if>
+		</div>
+		</div>
 	</div>
 	<script>
 		function submitDel() {
@@ -44,8 +65,8 @@
 			}		
 		}
 		
-		function like() {
-			
+		function toggleLike(yn_like) {
+			location.href="/board/toggleLike?i_board=${data.i_board}&yn_like=" + yn_like
 		}
 		
 	</script>

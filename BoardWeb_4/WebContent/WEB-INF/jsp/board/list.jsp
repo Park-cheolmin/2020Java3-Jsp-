@@ -21,8 +21,8 @@
    h1 {fontweight: bold; text-align: center;}
    .user {width : 100%; text-align: right; }
 
-   a .writebutton {background : #FCD0BA; color:#765D69 ; margin-top : 20px; font-weight : bold; }
-   a .outbutton {background : #FEFAD4; color: #765D69  font-weight : bold;}
+   a .writebutton {background : #FCD0BA; color:#765D69 ; margin-top : 20px; font-weight : bold; border: none; border-radius: 10px; width: 70px;}
+   a .outbutton {background : #FEFAD4; color: #765D69  font-weight : bold; border: none; border-radius: 10px; width: 70px;}
 </style>
 </head>
 <body>

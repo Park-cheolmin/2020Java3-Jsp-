@@ -29,7 +29,9 @@ public class BoardRegmodSer extends HttpServlet {
 		int i_board = MyUtils.parseStrToInt(strI_board);
 		
 		if(i_board != 0) {//수정
-			request.setAttribute("data", BoardDAO.selBoard(i_board));
+			BoardVO param = new BoardVO();
+			param.setI_board(i_board);
+			request.setAttribute("data", BoardDAO.selBoard(param));
 		}
 		
 		

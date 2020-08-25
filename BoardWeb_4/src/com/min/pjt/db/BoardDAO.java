@@ -13,32 +13,41 @@ import com.min.pjt.vo.UserVO;
 
 public class BoardDAO {
 	
-	public static BoardDomain selBoard(final int i_board) {
+	public static BoardDomain selBoard(final BoardVO param) {
 		final BoardDomain result = new BoardDomain();
-		String sql =" select B.nm, A.i_user"
-						+ " , A.title, A.ctnt, A.hits, to_char(A.r_dt, 'YY/MM/DD HH24:MI') as r_dt" 
+		result.setI_board(param.getI_board());
+		
+		String sql =" select B.nm, A.i_user" 
+						+ " , A.title, A.ctnt, A.hits, to_char(A.r_dt, 'YY/MM/DD HH24:MI') as r_dt " 
+						+ " , DECODE(C.i_user, null, 0, 1) as yn_like "
 						+ " FROM t_board4 A " 
 						+ " INNER JOIN t_user B " 
 						+ " ON A.i_user = B.i_user " 
-						+ " WHERE i_board = ? ";
+						+ " LEFT JOIN t_board4_like C " 
+						+ " ON A.i_board = C.i_board "
+						+ " AND C.i_user = ? " //로그인한사람의 i_user
+						+ " WHERE A.i_board = ? ";
 		
 		int resultInt = JdbcTemplate.executeQuery(sql, new JdbcSelectInterface() {
 
 			@Override
 			public void prepared(PreparedStatement ps) throws SQLException {
-				ps.setInt(1, i_board);
+				ps.setInt(1, param.getI_user());
+				ps.setInt(2, param.getI_board());
+				
+				
 			}
 
 			@Override
-			public int executeQuery(ResultSet rs) throws SQLException {
+			public int executeQuery(ResultSet rs) throws SQLException {// 쿼리문이 늘어나면 이부분이늘어남
 				while(rs.next()) {
-					result.setI_board(i_board);
-					result.setI_user(rs.getInt("i_user"));
+					result.setI_user(rs.getInt("i_user")); //작성자
 					result.setTitle(rs.getNString("title"));
 					result.setCtnt(rs.getNString("ctnt"));
 					result.setNm(rs.getNString("nm")); 
 					result.setR_dt(rs.getNString("r_dt"));
 					result.setHits(rs.getInt("hits"));
+					result.setYn_like(rs.getInt("yn_like"));
 				}		
 				return 1;
 			}
@@ -153,38 +162,29 @@ public class BoardDAO {
 				
 				ps.setInt(1, i_board);
 			}
-			
 		});
 	}
 	
-	public static BoardVO likeDetailBoard(BoardVO param) {
-		String sql = " SELECT A.i_board, A.title, A.ctnt, A.hits, A.i_user, A.r_dt, B.nm, DECODE(C.i_user, null, 0, 1) as yn_like "
-					+ " FROM t_board4 A "
-					+ " INNER JOIN t_user B "
-					+ " ON A.i_user = B.i_user "
-					+ " LEFT JOIN t_board4_like C "
-					+ " ON A.i_board = C.i_board "
-					+ " AND C.i_user = ? "
-					+ " WHERE A.i_board = ? ";
+	public static void toggleLike(BoardDomain bd) {
+		String sql;
+		if (bd.getYn_like()==0) {
+			sql = " insert into t_board4_like "  
+					+ " (i_user, i_board) " 
+					+ " values " 
+					+ " (?, ?) ";
+		} else {
+			sql = " Delete from t_board4_like "
+				+ " where i_user=? "
+				+ " and i_board=? ";
+		}
 		
-		int resultInt = JdbcTemplate.executeQuery(sql, new JdbcSelectInterface() {
+		JdbcTemplate.executeUpdate(sql, new JdbcUpdateInterface(){
 
 			@Override
-			public void prepared(PreparedStatement ps) throws SQLException {
-				ps.setInt(1, param.getI_user());
-				ps.setInt(2, param.getI_board());
-			}
-
-			@Override
-			public int executeQuery(ResultSet rs) throws SQLException {
-				while(rs.next()) {
-					String title = rs.getNString("title");
-					
-				}		
-				return 1;
-			}
-			
+			public void update(PreparedStatement ps) throws SQLException {
+				ps.setInt(1, bd.getI_user());
+				ps.setInt(2, bd.getI_board());
+			}	
 		});
-	}
-	
+	}	
 }

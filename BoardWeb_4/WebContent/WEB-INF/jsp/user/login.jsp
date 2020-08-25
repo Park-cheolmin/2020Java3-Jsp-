@@ -1,3 +1,4 @@
+  
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -6,23 +7,88 @@
 <meta charset="UTF-8">
 <title>로그인</title>
 <style>
-	.err {
-		color : red;
+
+	* {
+		font-family: 'Noto Sans KR', sans-serif;
 	}
-	#frm { text-align : center;}
-	h1{text-align : center;}
-	.login { display : inline-block;  margin-top : 10px;}
-	button { margin-left :918px; margin-top : 10px;}
+	*:focus { 
+		outline:none; 
+	}
+	.container {
+		width: 300px;
+		margin: 80px auto; 
+		border-radius: 7%;
+		background: linear-gradient(to left, #bbd2c5, #536976);
+		padding: 20px;
+	}
+	h1 {
+		margin-bottom: 10px;
+		color: #58585a;
+		font-size: 1.8em;
+		text-align: center;
+	}
+	#frm{
+		margin : 20px;
+		margin-top: 40px;
+	}
+	#join {
+		text-decoration: none;
+		color: #58585a;
+		margin: 20px;
+		font-weight: bolder;
+		margin-left: 135px;
+		width: 100px;
+		
+		
+	}
+	#frm input {
+		width: 200px;
+		padding: 7px;
+		border: 0;
+		border-bottom: 2px solid #58585a;
+		color: #58585a;
+		text-indent: 10px;
+		background: #faf9f7;
+		font-weight: bold;'
+	}
+	#frm div {
+		margin : 20px;
+	}
+	#frm button {
+		width: 100px;
+		background-color: #BBD2C5;
+		text-align: center;
+		border: none;
+		padding: 8px;
+		color: #58585a;
+		border-radius: 10px;
+		margin-top: 20px;
+		margin-left: 65px;
+		font-weight : bolder;
+	}
+	.err {
+		color: #ff6f69;
+		text-align: center;
+		font-size: 0.9em;
+		font-weight : bold;
+	}
 </style>
 </head>
 <body>
-	<h1>👀HELLO👀</h1>
-	<div class = "err">${msg }</div>
-	<form id = "frm" action = "/login" method = "post">
-		<div><label><input type = "text" name="user_id" placeholder = "아이디" value = "${data.user_id }"></label></div>
- 		<div><label><input type = "password" name="user_pw" placeholder = "비밀번호" ></label></div>
- 		<div class = "login"><input type = "submit" value="로그인"></div>
-	</form>
-	<a href = "/join"><button>회원가입</button></a>
+	<div class="container">
+		<h1>👀HELLO👀</h1>
+		<div>
+			<form id="frm" action="/login" method="post">
+				<div><input type="text" name="user_id" placeholder="아이디" autofocus value="${user_id }"></div>
+				<div><input type="password" name="user_pw" placeholder="비밀번호"></div>
+				<div><button type="submit">로그인</button></div>
+			</form>
+			<div class="err">${msg }</div>
+			<a href="/join" id="join">JOIN</a>
+		</div>
+	</div>
+	<script>
+	</script>
 </body>
 </html>
+	
