@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.min.pjt.MyUtils;
 import com.min.pjt.ViewResolver;
+import com.min.pjt.db.BoardCmtDAO;
 import com.min.pjt.db.BoardDAO;
 import com.min.pjt.vo.BoardVO;
 import com.min.pjt.vo.UserVO;							//pageContext request session application 내장객체
@@ -44,6 +45,9 @@ public class BoardDetailSer extends HttpServlet {
 		param.setI_user(loginUser.getI_user());
 		param.setI_board(i_board);
 		request.setAttribute("data", BoardDAO.selBoard(param));
+		
+		request.setAttribute("cmtList", BoardCmtDAO.selCmtList(i_board));  
+		
 		ViewResolver.forward("board/detail", request, response);
 		
 		

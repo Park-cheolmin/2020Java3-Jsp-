@@ -11,6 +11,10 @@ import javax.servlet.http.HttpSession;
 import com.min.pjt.vo.UserVO;
 
 public class MyUtils {
+	public static int getIntParameter(HttpServletRequest request, String keyNm) {
+		return parseStrToInt(request.getParameter(keyNm));
+	}
+	
 	public static int parseStrToInt(String str) { //이름이같으면 오버로딩
 		return parseStrToInt(str, 0);
 	}
