@@ -38,6 +38,7 @@ public class BoardCmtSer extends HttpServlet {
 		String strI_cmt = request.getParameter("i_cmt");
 		String strI_board = request.getParameter("i_board");
 		String cmt = request.getParameter("cmt");
+		String m_dt = request.getParameter("m_dt");
 		
 		int i_board = MyUtils.parseStrToInt(strI_board);
 		
@@ -54,6 +55,8 @@ public class BoardCmtSer extends HttpServlet {
 			break;
 
 		default:// 수정
+			param.setI_cmt(MyUtils.parseStrToInt(strI_cmt)); 
+			param.setM_dt(m_dt);
 			BoardCmtDAO.updCmt(param);
 			break;
 		}

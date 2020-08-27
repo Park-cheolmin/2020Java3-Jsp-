@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.jasper.tagplugins.jstl.core.Param;
+
 import com.min.pjt.vo.BoardDomain;
 import com.min.pjt.vo.BoardVO;
 import com.min.pjt.vo.UserVO;
@@ -17,16 +19,16 @@ public class BoardDAO {
 		final BoardDomain result = new BoardDomain();
 		result.setI_board(param.getI_board());
 		
-		String sql =" select B.nm, A.i_user" 
-						+ " , A.title, A.ctnt, A.hits, to_char(A.r_dt, 'YY/MM/DD HH24:MI') as r_dt " 
-						+ " , DECODE(C.i_user, null, 0, 1) as yn_like "
-						+ " FROM t_board4 A " 
-						+ " INNER JOIN t_user B " 
-						+ " ON A.i_user = B.i_user " 
-						+ " LEFT JOIN t_board4_like C " 
-						+ " ON A.i_board = C.i_board "
-						+ " AND C.i_user = ? " //로그인한사람의 i_user
-						+ " WHERE A.i_board = ? ";
+		String sql = " SELECT B.nm, A.i_user "
+				+ " , A.title, A.ctnt, A.hits, TO_CHAR(A.r_dt, 'YYYY/MM/DD HH24:MI') as r_dt"
+				+ " , DECODE(C.i_user, null, 0, 1) as yn_like "
+				+ " FROM t_board4 A "
+				+ " INNER JOIN t_user B "
+				+ " ON A.i_user = B.i_user "
+				+ " LEFT JOIN t_board4_like C "
+				+ " ON A.i_board = C.i_board "
+				+ " AND C.i_user = ? "
+				+ " WHERE A.i_board = ? ";
 		
 		int resultInt = JdbcTemplate.executeQuery(sql, new JdbcSelectInterface() {
 
@@ -34,30 +36,75 @@ public class BoardDAO {
 			public void prepared(PreparedStatement ps) throws SQLException {
 				ps.setInt(1, param.getI_user());
 				ps.setInt(2, param.getI_board());
-				
-				
 			}
 
 			@Override
-			public int executeQuery(ResultSet rs) throws SQLException {// 쿼리문이 늘어나면 이부분이늘어남
-				while(rs.next()) {
-					result.setI_user(rs.getInt("i_user")); //작성자
+			public int executeQuery(ResultSet rs) throws SQLException {
+				if(rs.next()) {
+					result.setI_user(rs.getInt("i_user")); //작성자 i_user
+					result.setNm(rs.getNString("nm"));
 					result.setTitle(rs.getNString("title"));
 					result.setCtnt(rs.getNString("ctnt"));
-					result.setNm(rs.getNString("nm")); 
-					result.setR_dt(rs.getNString("r_dt"));
 					result.setHits(rs.getInt("hits"));
+					result.setR_dt(rs.getNString("r_dt"));
 					result.setYn_like(rs.getInt("yn_like"));
-				}		
+				}
 				return 1;
 			}
-			
 		});
 		
 		return result;
-		
 	}
 	
+	public static List<BoardDomain> selBoardList(BoardDomain param) {
+		List<BoardDomain> list = new ArrayList();
+		/*
+		String sql = " SELECT A.i_board, A.title, A.hits, A.i_user, A.r_dt, B.nm "
+				+ " FROM t_board4 A INNER JOIN t_user B ON A.i_user = B.i_user "
+				+ " ORDER BY i_board DESC ";
+		*/
+		String sql = " SELECT A.* FROM ( "
+				+ " SELECT ROWNUM as RNUM, A.* FROM ( "
+				+ " SELECT A.i_board, A.title, A.hits, A.i_user, A.r_dt, B.nm "
+				+ " FROM t_board4 A INNER JOIN t_user B ON A.i_user = B.i_user "
+				+ " ORDER BY i_board DESC "
+				+ " ) A WHERE ROWNUM <= ? "
+				+ " ) A WHERE A.RNUM > ? ";
+		
+		int result = JdbcTemplate.executeQuery(sql, new JdbcSelectInterface() {
+
+			@Override
+			public void prepared(PreparedStatement ps) throws SQLException {
+				ps.setInt(1, param.geteIdx());
+				ps.setInt(2, param.getsIdx());
+			}
+
+			@Override
+			public int executeQuery(ResultSet rs) throws SQLException {
+				while(rs.next()) {
+					int i_board = rs.getInt("i_board");	
+					String title = rs.getNString("title");
+					int hits = rs.getInt("hits");
+					int i_user = rs.getInt("i_user");
+					String r_dt = rs.getNString("r_dt");
+					String nm = rs.getNString("nm");
+					
+					BoardDomain vo = new BoardDomain();
+					vo.setI_board(i_board);
+					vo.setTitle(title);
+					vo.setHits(hits);
+					vo.setI_user(i_user);
+					vo.setR_dt(r_dt);
+					vo.setNm(nm);
+					
+					list.add(vo);
+				}
+				return 1;
+			}			
+		});
+		
+		return list;
+	}
 	
 	public static int insBoard(BoardVO param) {
 	
@@ -79,42 +126,33 @@ public class BoardDAO {
 		});
 	}
 	
-	public static List<BoardVO> selBoardList() {
-		final List<BoardVO> list = new ArrayList();  //list에 추가 삭제 가능, 주소값변경만불가능
+	
+	
+	//페이징 숫자 가져오기
+	public static int selPagingCnt(final BoardDomain param) {
+		String sql = " SELECT CEIL(COUNT(i_board) / ?) FROM t_board4 ";
 		
-		String sql = " SELECT i_board, title, hits, i_user, r_dt "
-				+ " FROM t_board4 ORDER BY i_board DESC "; //?가 없어서 prepared가 필요없음
-		
-		int result = JdbcTemplate.executeQuery(sql, new JdbcSelectInterface() {
+		return JdbcTemplate.executeQuery(sql, new JdbcSelectInterface() {
 
 			@Override
-			public void prepared(PreparedStatement ps) throws SQLException {}
+			public void prepared(PreparedStatement ps) throws SQLException {
+				ps.setInt(1, param.getRecord_cnt());
+				
+			}
 
 			@Override
 			public int executeQuery(ResultSet rs) throws SQLException {
-				while(rs.next()) {
-					int i_board = rs.getInt("i_board");
-					String title = rs.getNString("title");
-					int hits = rs.getInt("hits");
-					int i_user = rs.getInt("i_user");
-					String r_dt = rs.getNString("r_dt");
-					
-					BoardVO vo = new BoardVO();
-					vo.setI_board(i_board);
-					vo.setTitle(title);
-					vo.setHits(hits);
-					vo.setI_user(i_user);
-					vo.setR_dt(r_dt);
-					
-					list.add(vo);
+				if(rs.next()) {
+					return rs.getInt(1);
 				}
-				return 1;
+				return 0; 
 			}
+			
 			
 		});
 		
-		return list;
 	}
+	
 	public static int updBoard(BoardVO param) {
 		String sql = " UPDATE t_board4 "
 				+ " SET  m_dt = sysdate "
