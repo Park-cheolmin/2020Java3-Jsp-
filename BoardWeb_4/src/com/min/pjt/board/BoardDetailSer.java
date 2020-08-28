@@ -26,9 +26,10 @@ public class BoardDetailSer extends HttpServlet {
 			response.sendRedirect("/login");
 			return;
 		}
-		
+		String searchText = request.getParameter("searchText");
 		String strI_board = request.getParameter("i_board");
 		int i_board = Integer.parseInt(strI_board);
+		
 		
 		
 		//단독으로 조회수 올리기 방지[start!]

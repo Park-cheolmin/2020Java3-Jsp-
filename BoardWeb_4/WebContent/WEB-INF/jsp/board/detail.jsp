@@ -10,6 +10,7 @@
 <style>
 	.container {margin: 0 auto; width: 700px;}
 	.ctnt { width: 700px; }
+	a { text-decoration: none;}
 	a .listbutton { font-weight : bold;}
 	h1 { font-size : 1.5em; widh: 300px; text-align: center;}
 	.pointerCursor {cursor: pointer;}
@@ -30,7 +31,7 @@
 </head>
 <body>
 	<div class="container">
-		<a href="/board/list"><button class="listbutton">리스트</button></a>
+		<button><a href="/board/list?page=${param.page}&record_cnt=${param.record_cnt}&searchText=${param.searchText}">리스트</a></button>
 		<c:if test="${loginUser.i_user == data.i_user }">
 			<a href="/board/regmod?i_board=${data.i_board}">수정</a>
 			<form id="delFrm" action="/board/del" method="post">
@@ -132,7 +133,7 @@
 		}
 		
 		function toggleLike(yn_like) {
-			location.href="/board/toggleLike?i_board=${data.i_board}&yn_like=" + yn_like
+			location.href="/board/toggleLike?page=${param.page}&record_cnt=${param.record_cnt}&searchText=${param.searchText}&i_board=${data.i_board}&yn_like=" + yn_like
 		}
 		
 	

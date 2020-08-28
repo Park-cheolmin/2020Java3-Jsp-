@@ -1,6 +1,8 @@
 package com.min.pjt.board;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -25,6 +27,13 @@ public class ToggleLikeSer extends HttpServlet {
 		
 		String strI_board = request.getParameter("i_board"); 
 		String strYn_like = request.getParameter("yn_like");
+		String page = request.getParameter("page");
+		String record_cnt = request.getParameter("record_cnt");
+		String searchText = request.getParameter("searchText");
+		
+		searchText = URLEncoder.encode(searchText, "UTF-8");
+		
+	
 		
 		int i_board = MyUtils.parseStrToInt(strI_board); 
 		int yn_like = MyUtils.parseStrToInt(strYn_like);
@@ -37,7 +46,8 @@ public class ToggleLikeSer extends HttpServlet {
 		
 		BoardDAO.toggleLike(bd);
 		
-		response.sendRedirect("/board/detail?i_board="+ strI_board);
+		String target = String.format("/board/detail?i_board=%s&page=%s&record_cnt=%s&searchText=%s", strI_board, page, record_cnt, searchText);
+		response.sendRedirect(target);
 		
 	}
 

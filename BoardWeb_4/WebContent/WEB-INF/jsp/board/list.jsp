@@ -10,6 +10,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
 <style>
 	body { font-family: 'Noto Sans KR', sans-serif;}
+		a {
+		text-decoration: none;
+		color:black;
+	}
 	.container {width: 700px; margin : 0 auto;  }
 	table {border-collapse: collapse; width: 700px; margin: 0 auto; } 
 	th, td { border: 1px solid black;  }
@@ -25,15 +29,9 @@
    a .outbutton {background : #bbd2c5; color: #765D69  font-weight : bold; border: none; border-radius: 10px; width: 70px;}
    .fontCenter {text-align:center;}
    
-   .currentPage { color:#FCD0BA; font-weight: bold; }
-	a {
-		text-decoration: none;
-		color:black;
-	}
-	.pageFont {
-		font-size: 1.3em;
-		
-	}
+   .pageSelected { color:#FCD0BA; font-weight: bold; }
+
+	.pagingFont { font-size: 1.3em; }
 	
 	
    
@@ -43,29 +41,30 @@
 <body>
 	
 	<div class = "container">
-		<div class = "user">${loginUser.nm}님 환영합니다. <a href="/logout"><button  class = " outbutton ">로그아웃</button></a></div>
+		<div class = "user">${loginUser.nm}님 환영합니다.
+			<a href="/profile">프로필</a>
+			<a href="/logout"><button  class = " outbutton ">로그아웃</button></a>
+		</div>
 		<div class = "user">
 			<a href="/board/regmod"><button class = " writebutton ">글쓰기</button></a>
 		</div>
 		<div>
 			<form id="selFrm" action="/board/list" method="get">
 				<input type="hidden" name="page"  value="${param.page == null ?  1 : param.page}">
+				<input type="hidden" name="searchText"  value="${param.searchText}">
 				레코드 수 : 
 				
 				<select name="record_cnt" onchange="changeRecordCnt()">
 					<c:forEach begin="10" end="30" step="10" var="item">
 						<c:choose>
-							<c:when test="${param.record_cnt == item || param.record_cnt == null && item ==10 }">
-								<option value="${item}" selected>${item}개</option>
+							<c:when test="${param.record_cnt == item}">
+								<option value="${item}" selected>${item}개</option> 		 <%//레코드수를 설정하지않았을때는 기본값으로 10을 넣는다  selected는 한개만 들어가야하고 여러개더라도 맨위에꺼 선택%>
 							</c:when>
 							<c:otherwise>
 								<option value="${item}">${item}개</option>
 							</c:otherwise>
 						</c:choose>
-						
-					
-					</c:forEach>
-					
+					</c:forEach>	
 				</select>
 			</form>
 			
@@ -80,7 +79,7 @@
 					<th>작성자</th>
 					<th>작성 날짜</th>		
 				</tr>
-				<c:forEach items="${data}" var="item">
+				<c:forEach items="${list}" var="item">
 					<tr class="itemRow" onclick="moveDetail(${item.i_board})">
 						<td>${item.i_board}</td>
 						<td>${item.title}</td>
@@ -90,28 +89,35 @@
 					</tr>
 				</c:forEach>
 		</table>
+		<div>
+			<form action="/board/list">
+				<input type="search" name="searchText">
+				<input type="submit" value="검색">
+			</form>
+		</div>
 
 		<div class="fontCenter">
-			<c:forEach  begin="1" end="${pagingCnt}" step="1" var="item">
+			<c:forEach begin="1" end="${pagingCnt}" var="item">
 				<c:choose>
-					<c:when test="${param.page == item || (param.page == null && item == 1)}">
-						<span class="pageFont currentPage ">${item}</span>
+					<c:when test="${page == item}">
+						<span class="pagingFont pageSelected">${item}</span>
 					</c:when>
 					<c:otherwise>
-						<span class="pageFont"><a href="/board/list?page=${item}">${item}</a></span>
+						<span class="pagingFont">
+							<a href="/board/list?page=${item}&record_cnt=${param.record_cnt}&searchText=${param.searchText}">${item}</a>
+						</span>
 					</c:otherwise>
 				</c:choose>
-				
 			</c:forEach>
-			
 		</div>
+		
 		<script>
 		 	function changeRecordCnt() {
 		 		selFrm.submit()
 		 	}
 			function moveDetail(i_board) {
 				console.log(i_board)
-				location.href = "/board/detail?i_board=" + i_board;
+				location.href = "/board/detail?page=${page}&record_cnt=${param.record_cnt}&searchText=${param.searchText}&i_board=" + i_board;
 			}
 		</script>
 	</div>
