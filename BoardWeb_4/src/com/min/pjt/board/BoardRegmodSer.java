@@ -53,10 +53,13 @@ public class BoardRegmodSer extends HttpServlet {
 		System.out.println("title: " + title);
 		System.out.println("ctnt: " + ctnt);
 		
+		String filter1 = scriptFilter(ctnt);
+		String filter2 = swearWordFilter(filter1);
 		
 		BoardVO param= new BoardVO(); //위에 받은 값을 객체에 담는다
 		param.setTitle(title);
 		param.setCtnt(ctnt);
+		param.setCtnt(filter1);
 		param.setI_user(loginUser.getI_user());
 		int result=0;
 		
@@ -74,11 +77,27 @@ public class BoardRegmodSer extends HttpServlet {
 		
 		
 		System.out.println("result : " + result);
+
+	}
+	//욕 필터
+	private String swearWordFilter(final String ctnt) {
+		String[] filters = {"개새끼", "미친년", "ㄱㅐㅅㅐㄲㅣ"};
+		String result = ctnt;
+		for(int i=0; i<filters.length; i++) {
+			result = result.replace(filters[i], "***");
+		}
+		return result;
+	}
+	//스크립트 필터
+	private String scriptFilter(String ctnt) {
+		String[] filters = {"<script>", "</script>"};  //이문장을 찾아서 밑에문장으로 바꿈
+		String[] filterReplaces = {"&lt;script&gt;", "&lt;/script&gt;"};
 		
-		
-		
-		
-		
+		String result = ctnt;
+		for(int i=0; i<filters.length; i++) {
+			result = result.replace(filters[i], filterReplaces[i]);
+		}
+		return result;
 	}
 
 }

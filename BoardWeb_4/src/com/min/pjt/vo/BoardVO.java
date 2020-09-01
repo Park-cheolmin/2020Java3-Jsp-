@@ -4,7 +4,6 @@ public class BoardVO {
 	private int i_board;
 	private String title;
 	private String ctnt;
-	
 	private int hits;
 	private int i_user;
 	private String r_dt;

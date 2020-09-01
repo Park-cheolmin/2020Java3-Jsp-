@@ -20,7 +20,7 @@ public class BoardDAO {
 		result.setI_board(param.getI_board());
 		
 		String sql = " SELECT B.nm, A.i_user "
-				+ " , A.title, A.ctnt, A.hits, TO_CHAR(A.r_dt, 'YYYY/MM/DD HH24:MI') as r_dt"
+				+ " , A.title, B.profile_img, A.ctnt, A.hits,  TO_CHAR(A.r_dt, 'YYYY/MM/DD HH24:MI') as r_dt"
 				+ " , DECODE(C.i_user, null, 0, 1) as yn_like "
 				+ " FROM t_board4 A "
 				+ " INNER JOIN t_user B "
@@ -42,6 +42,7 @@ public class BoardDAO {
 			public int executeQuery(ResultSet rs) throws SQLException {
 				if(rs.next()) {
 					result.setI_user(rs.getInt("i_user")); //작성자 i_user
+					result.setProfile_img(rs.getNString("profile_img"));
 					result.setNm(rs.getNString("nm"));
 					result.setTitle(rs.getNString("title"));
 					result.setCtnt(rs.getNString("ctnt"));
@@ -63,14 +64,24 @@ public class BoardDAO {
 				+ " FROM t_board4 A INNER JOIN t_user B ON A.i_user = B.i_user "
 				+ " ORDER BY i_board DESC ";
 		*/
-		String sql = " SELECT A.* FROM ( "
+		String sql = " SELECT A.*, nvl(B.cnt, 0) as like_cnt"
+				+ " , nvl(C.cnt, 0)as cmt_cnt , DECODE(D.i_board, null, 0, 1) as yn_like FROM ( "
 				+ " SELECT ROWNUM as RNUM, A.* FROM ( "
-				+ " SELECT A.i_board, A.title, A.hits, A.i_user, A.r_dt, B.nm "
+				+ " SELECT A.i_board, A.title, A.hits, A.i_user, A.r_dt, B.nm, B.profile_img "
 				+ " FROM t_board4 A INNER JOIN t_user B ON A.i_user = B.i_user "
 				+ " WHERE A.title LIKE ? "
 				+ " ORDER BY i_board DESC "
 				+ " ) A WHERE ROWNUM <= ? "
+				+ " ) LEFT JOIN ( "
+				+ " SELECT i_board, count(i_board) as cnt FROM t_board4_like GROUP BY i_board ) B "
+				+ " ON A.i_board = B.i_board "
+				+ " LEFT JOIN ( SELECT i_board, count(i_board) as cnt FROM t_board4_cmt GROUP BY i_board) C "
+				+ " ON A.i_board = C.i_board "
+				+ " LEFT JOIN ( SELECT i_board FROM t_board4_like WHERE i_user = ?) D "
+				+ " ON A.i_board = D.i_board "
 				+ " ) A WHERE A.RNUM > ? ";
+				
+				
 		
 		int result = JdbcTemplate.executeQuery(sql, new JdbcSelectInterface() {
 
@@ -90,6 +101,7 @@ public class BoardDAO {
 					int i_user = rs.getInt("i_user");
 					String r_dt = rs.getNString("r_dt");
 					String nm = rs.getNString("nm");
+					String profile_img = rs.getNString("profile_img");
 					
 					BoardDomain vo = new BoardDomain();
 					vo.setI_board(i_board);
@@ -98,6 +110,7 @@ public class BoardDAO {
 					vo.setI_user(i_user);
 					vo.setR_dt(r_dt);
 					vo.setNm(nm);
+					vo.setProfile_img(profile_img);
 					
 					list.add(vo);
 				}

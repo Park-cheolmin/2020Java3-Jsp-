@@ -68,12 +68,12 @@ public class BoardCmtDAO {
 	
 	public static List<BoardCmtVO> selCmtList(int i_board) {
 		final List<BoardCmtVO> list = new ArrayList();
-		String sql = " SELECT A.i_cmt, B.i_user, A.cmt, A.r_dt, A.m_dt, B.nm" //수정 삭제할때 i_user값이 필요하다 
+		String sql = " SELECT A.i_cmt, B.i_user, A.cmt, A.r_dt, A.m_dt, B.nm, B.profile_img " //수정 삭제할때 i_user값이 필요하다 
 				+ " from t_board4_cmt A "
 				+ " INNER JOIN t_user B " //INNER LEFT 둘다 상관없다 
 				+ " on A.i_user = B.i_user "
 				+ " where A.i_board = ? "
-				+ " order by A. i_cmt ";
+				+ " order by A.i_cmt ";
 
 		JdbcTemplate.executeQuery(sql, new JdbcSelectInterface() {
 
@@ -92,6 +92,7 @@ public class BoardCmtDAO {
 					String r_dt = rs.getNString("r_dt");
 					String m_dt = rs.getNString("m_dt");
 					String nm = rs.getNString("nm");
+					String profile_img = rs.getNString("profile_img");
 
 					BoardCmtVO param = new BoardCmtVO();
 					param.setI_cmt(i_cmt);
@@ -100,6 +101,7 @@ public class BoardCmtDAO {
 					param.setR_dt(r_dt);
 					param.setM_dt(m_dt);
 					param.setNm(nm);
+					param.setProfile_img(profile_img);
 
 
 					list.add(param);

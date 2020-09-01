@@ -8,7 +8,14 @@ public class BoardDomain extends BoardVO{
 	private int sIdx;
 	private int record_cnt; //페이지당 나오는 레코드 수 (글 수)
 	private String searchText;
+	private String profile_img;
 	
+	public String getProfile_img() {
+		return profile_img;
+	}
+	public void setProfile_img(String profile_img) {
+		this.profile_img = profile_img;
+	}
 	public String getSearchText() {
 		return searchText;
 	}

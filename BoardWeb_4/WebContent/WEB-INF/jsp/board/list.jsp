@@ -30,8 +30,19 @@
    .fontCenter {text-align:center;}
    
    .pageSelected { color:#FCD0BA; font-weight: bold; }
-
-	.pagingFont { font-size: 1.3em; }
+   .pagingFont { font-size: 1.3em; }
+   .containerPImg {
+   		display: inline-block;
+   		width: 30px;
+   		height: 30px;
+   		border-radius: 50%;
+   		overflow: hidden;
+   }
+   .pImg {
+   		object-fit:cover;
+   		height:100%;
+   		width:100%;
+   }
 	
 	
    
@@ -84,7 +95,19 @@
 						<td>${item.i_board}</td>
 						<td>${item.title}</td>
 						<td>${item.hits}</td>
-						<td>${item.nm}</td>
+						<td>
+							<div class="containerPImg">
+								<c:choose>
+									<c:when test="${item.profile_img != null}">
+										<img class="pImg" src="/img/user/${item.i_user}/${item.profile_img}">
+									</c:when>
+									<c:otherwise>
+										<img class="pImg" src="/img/default_profile.jpg">
+									</c:otherwise>
+								</c:choose>
+							</div>
+							${item.nm}
+						</td>
 						<td>${item.r_dt}</td>
 					</tr>
 				</c:forEach>

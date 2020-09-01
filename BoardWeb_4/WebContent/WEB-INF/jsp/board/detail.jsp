@@ -26,6 +26,18 @@
   		
   	}
   	#cmt { width:630px;}
+  	 .containerPImg {
+   		display: inline-block;
+   		width: 30px;
+   		height: 30px;
+   		border-radius: 50%;
+   		overflow: hidden;
+   }
+   .pImg {
+   		object-fit:cover;
+   		height:100%;
+   		width:100%;
+   }
   	
 </style>
 </head>
@@ -52,7 +64,19 @@
 		<div class="ctnt">${data.ctnt}</div>
 		<div class="inlineDiv">
 			<div class="num">게시판 번호 : ${data.i_board}</div>
-			<div>작성자 : ${data.nm}</div>
+			<div>
+				<div class="containerPImg">
+					<c:choose>
+						<c:when test="${data.profile_img != null}">
+							<img class="pImg" src="/img/user/${data.i_user}/${data.profile_img}">
+						</c:when>
+						<c:otherwise>
+							<img class="pImg" src="/img/default_profile.jpg">
+						</c:otherwise>
+					</c:choose>
+				</div>
+				작성자 : ${data.nm}
+			</div>
 			<div>조회수 : ${data.hits}</div>
 			<div class="pointerCursor" onclick="toggleLike(${data.yn_like})">
 				<c:if test="${data.yn_like == 0 }">
@@ -87,7 +111,19 @@
 				<c:forEach items="${cmtList}" var="item">
 					<tr>
 						<td>${item.cmt}</td>
-						<td>${item.nm}</td>
+						<td>
+							<div class="containerPImg">
+								<c:choose>
+									<c:when test="${item.profile_img != null}">
+										<img class="pImg" src="/img/user/${item.i_user}/${item.profile_img}">
+									</c:when>
+									<c:otherwise>
+										<img class="pImg" src="/img/default_profile.jpg">
+									</c:otherwise>
+								</c:choose>
+							</div>
+							${item.nm}
+						</td>
 						<td>${item.m_dt}</td>
 						<td>
 							<c:if test="${item.i_user == loginUser.i_user}">
