@@ -7,6 +7,7 @@
 <head>
 <meta charset="UTF-8">
 <title>자유게시판</title>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
 <style>
 	body { font-family: 'Noto Sans KR', sans-serif;}
@@ -43,7 +44,16 @@
    		height:100%;
    		width:100%;
    }
-	
+   .highlight {
+   		color : pink;
+   		font-weight: bold;
+   		
+   }
+  .material-icons{
+	background: linear-gradient(to right, #e55d87, #5fc3e4);
+	-webkit-background-clip: text;
+  	-webkit-text-fill-color: transparent;
+  	}
 	
    
    
@@ -87,14 +97,26 @@
 					<th>게시판 번호</th>
 					<th>제목</th>
 					<th>조회수</th>
+					<th>좋아요</th>
+					<th></th>
+					<th></th>
 					<th>작성자</th>
 					<th>작성 날짜</th>		
 				</tr>
 				<c:forEach items="${list}" var="item">
 					<tr class="itemRow" onclick="moveDetail(${item.i_board})">
 						<td>${item.i_board}</td>
-						<td>${item.title}</td>
+						<td>${item.title}(${item.cmt_cnt})</td>
 						<td>${item.hits}</td>
+						<td>${item.like_cnt}</td>
+						<td>
+								<c:if test="${item.yn_like == 0 }">
+									<span class="material-icons">favorite_border</span>
+								</c:if>
+								<c:if test="${item.yn_like == 1 }">
+									<span class="material-icons">favorite</span>
+								</c:if>
+						</td>
 						<td>
 							<div class="containerPImg">
 								<c:choose>
@@ -106,15 +128,20 @@
 									</c:otherwise>
 								</c:choose>
 							</div>
-							${item.nm}
 						</td>
+						<td>	${item.nm}</td>
 						<td>${item.r_dt}</td>
 					</tr>
 				</c:forEach>
 		</table>
 		<div>
 			<form action="/board/list">
-				<input type="search" name="searchText">
+				<select name="searchType" >
+					<option value="a" ${searchType == 'a' ? 'selected' : '' }>제목</option>
+					<option value="b" ${searchType == 'b' ? 'selected' : '' }>내용</option>
+					<option value="c" ${searchType == 'c' ? 'selected' : '' }>제목+내용</option>
+				</select>
+				<input type="search" name="searchText" value="${param.searchText}">
 				<input type="submit" value="검색">
 			</form>
 		</div>
@@ -127,7 +154,7 @@
 					</c:when>
 					<c:otherwise>
 						<span class="pagingFont">
-							<a href="/board/list?page=${item}&record_cnt=${param.record_cnt}&searchText=${param.searchText}">${item}</a>
+							<a href="/board/list?page=${item}&record_cnt=${param.record_cnt}&searchType=${searchType}&searchText=${param.searchText}">${item}</a>
 						</span>
 					</c:otherwise>
 				</c:choose>
@@ -140,7 +167,7 @@
 		 	}
 			function moveDetail(i_board) {
 				console.log(i_board)
-				location.href = "/board/detail?page=${page}&record_cnt=${param.record_cnt}&searchText=${param.searchText}&i_board=" + i_board;
+				location.href = "/board/detail?page=${page}&record_cnt=${param.record_cnt}&searchType=${searchType}&searchText=${param.searchText}&i_board=" + i_board;
 			}
 		</script>
 	</div>

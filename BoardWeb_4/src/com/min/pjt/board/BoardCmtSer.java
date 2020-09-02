@@ -39,6 +39,7 @@ public class BoardCmtSer extends HttpServlet {
 		String strI_board = request.getParameter("i_board");
 		String cmt = request.getParameter("cmt");
 		String m_dt = request.getParameter("m_dt");
+
 		
 		int i_board = MyUtils.parseStrToInt(strI_board);
 		

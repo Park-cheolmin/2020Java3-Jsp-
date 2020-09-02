@@ -38,17 +38,23 @@
    		height:100%;
    		width:100%;
    }
-  	
+   .highlight {
+   		color:red;
+   }
+   a button {float: right; display: inline-block; width: 50px; margin-right:5px; border:none; border-radius: 50%;  background: #bbd2c5; }
+   .btnList {float : left; display: inline-block; width: 70px; margin-right:5px; border:none; border-radius: 50%;  background: #bbd2c5; }
+   
+  
 </style>
 </head>
 <body>
 	<div class="container">
-		<button><a href="/board/list?page=${param.page}&record_cnt=${param.record_cnt}&searchText=${param.searchText}">리스트</a></button>
+		<button class="btnList"><a href="/board/list?page=${param.page}&record_cnt=${param.record_cnt}&searchText=${param.searchText}&searchType=${param.searchType}">리스트</a></button>
 		<c:if test="${loginUser.i_user == data.i_user }">
-			<a href="/board/regmod?i_board=${data.i_board}">수정</a>
+			<a href="/board/regmod?i_board=${data.i_board}"><button>수정</button></a>
 			<form id="delFrm" action="/board/del" method="post">
 				<input type="hidden" name="i_board" value="${data.i_board}">
-				<a href="#" onclick="submitDel()">삭제</a>
+				<a href="#" onclick="submitDel()"><button>삭제</button></a>
 			</form>
 		</c:if>
 
@@ -57,11 +63,11 @@
 		<h1>자유게시판</h1>
 		<hr>
 		<div class="inlineDiv">
-			제목 : ${data.title}
+			<div id=elTitle>제목 : ${data.title}</div>
 			<div class="time">${data.r_dt}</div>
 		</div>
 		<hr>
-		<div class="ctnt">${data.ctnt}</div>
+		<div class="ctnt" id="elCtnt">${data.ctnt}</div>
 		<div class="inlineDiv">
 			<div class="num">게시판 번호 : ${data.i_board}</div>
 			<div>
@@ -93,6 +99,8 @@
 			<form id="cmtFrm" action="/board/cmt" method="post">
 				<input type="hidden" name="i_cmt" value="0">						<%//0이넘어가거나 빈칸이넘어가면 등록  아니면 수정%>
 				<input type="hidden" name="i_board" value="${data.i_board}">
+			
+				
 				<div>
 					<input type="text" id="cmt" name="cmt" placeholder="댓글내용">
 					<input type="submit" id="cmtSubmit" value="등록">
@@ -169,9 +177,41 @@
 		}
 		
 		function toggleLike(yn_like) {
-			location.href="/board/toggleLike?page=${param.page}&record_cnt=${param.record_cnt}&searchText=${param.searchText}&i_board=${data.i_board}&yn_like=" + yn_like
+			location.href="/board/toggleLike?page=${param.page}&record_cnt=${param.record_cnt}&searchType=${param.searchType}&searchText=${param.searchText}&i_board=${data.i_board}&yn_like=" + yn_like
 		}
 		
+		function dohighlight() {
+			var searchText = '${param.searchText}'
+			var searchType = '${param.searchType}'
+			
+			if(searchText == '') {
+				return
+			}
+			
+			switch(searchType) {
+			case 'a': //제목
+				var txt = elTitle.innerText
+				txt = txt.replace(new RegExp('${param.searchText}', "gi"), '<span class="highlight">' + searchText + '</span>')
+				elTitle.innerHTML = txt
+				break
+			case 'b': //내용
+				var txt = elCtnt.innerText
+				txt =txt.replace(new RegExp('${param.searchText}', "gi"), '<span class="highlight">' + searchText + '</span>')
+				elCtnt.innerHTML = txt
+				break
+			case 'c': //제목 + 내용
+				var txt = elTitle.innerText
+				txt.replace(new RegExp('${param.searchText}', "gi"), '<span class="highlight">' + searchText + '</span>')
+				elTitle.innerHTML = txt
+				
+				txt = elCtnt.innerText
+				txt.replace(new RegExp('${param.searchText}', "gi"), '<span class="highlight">' + searchText + '</span>')
+				elCtnt.innerHTML = txt
+				
+				break
+			}
+		}
+		dohighlight()
 	
 		
 		

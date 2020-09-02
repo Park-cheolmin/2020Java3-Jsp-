@@ -17,16 +17,22 @@ import com.min.pjt.ViewResolver;
 import com.min.pjt.db.BoardDAO;
 import com.min.pjt.vo.BoardDomain;
 import com.min.pjt.vo.BoardVO;
+import com.min.pjt.vo.UserVO;
 
 @WebServlet("/board/list")
 public class BoardListSer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		if(MyUtils.isLogout(request)) {
+		
+		UserVO loginUser = MyUtils.getLoginUser(request);
+		if(loginUser == null) {
 			response.sendRedirect("/login");
 			return;
 		}
+		String searchType = request.getParameter("searchType");
+		searchType = (searchType == null) ? "a" : searchType;
+		
 		String searchText = request.getParameter("searchText");
 		searchText = (searchText == null ? "" : searchText);
 		
@@ -37,7 +43,9 @@ public class BoardListSer extends HttpServlet {
 		recordCnt = (recordCnt == 0 ? 10 : recordCnt);
 		
 		BoardDomain param = new BoardDomain();
+		param.setI_user(loginUser.getI_user());
 		param.setRecord_cnt(recordCnt);
+		param.setSearchType(searchType);
 		param.setSearchText("%" + searchText + "%");
 		int pagingCnt = BoardDAO.selPagingCnt(param);
 		
@@ -45,6 +53,8 @@ public class BoardListSer extends HttpServlet {
 		if(page > pagingCnt) {  
 			page = pagingCnt; //마지막 페이지 값으로 변경
 		}
+		
+		request.setAttribute("searchType", searchType);
 		request.setAttribute("page", page);
 		System.out.println("page : " + page);
 		
@@ -55,7 +65,19 @@ public class BoardListSer extends HttpServlet {
 		param.seteIdx(eIdx);
 
 		request.setAttribute("pagingCnt", pagingCnt);
-		request.setAttribute("list", BoardDAO.selBoardList(param));
+		
+		List<BoardDomain> list = BoardDAO.selBoardList(param);
+		//하이라이트 처리
+		if(!"".equals(searchText) && ("a".equals(searchType) || "c".equals(searchType))) {
+			for(BoardDomain item : list) {
+				String title = item.getTitle();
+				title = title.replace(searchText
+						, "<span class=\"highlight\">" + searchText +"</span>");
+				item.setTitle(title);
+			}
+		}
+
+		request.setAttribute("list", list);
 		
 		ViewResolver.forward("board/list", request, response);
 	}
