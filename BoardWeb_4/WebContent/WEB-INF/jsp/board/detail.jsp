@@ -16,7 +16,7 @@
 	.pointerCursor {cursor: pointer;}
 	.inlineDiv div { display: inline-block; }
 	.time {float : right;}
-	.material-icons{
+	.material-icons {
 	background: linear-gradient(to right, #e55d87, #5fc3e4);
 	-webkit-background-clip: text;
   	-webkit-text-fill-color: transparent;
