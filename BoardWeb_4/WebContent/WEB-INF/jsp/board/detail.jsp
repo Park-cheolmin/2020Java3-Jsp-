@@ -8,7 +8,7 @@
 <title>상세페이지</title>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <style>
-	.container {margin: 0 auto; width: 700px;}
+	.container { width: 700px; margin: 0 auto; }
 	.ctnt { width: 700px; }
 	a { text-decoration: none;}
 	a .listbutton { font-weight : bold;}
@@ -25,7 +25,7 @@
   		margin-top: 30px;
   		
   	}
-  	#cmt { width:630px;}
+  	#cmt { width:550px;}
   	 .containerPImg {
    		display: inline-block;
    		width: 30px;
@@ -43,8 +43,47 @@
    }
    a button {float: right; display: inline-block; width: 50px; margin-right:5px; border:none; border-radius: 50%;  background: #bbd2c5; }
    .btnList {float : left; display: inline-block; width: 70px; margin-right:5px; border:none; border-radius: 50%;  background: #bbd2c5; }
+   .likeCnt {font : 0.8em;}
+
+   #likeListContainer {
+   		opacity: 0;
+   		border: 1px solid #bdc3c7;
+	   	position: absolute;
+	   	left: 0px;
+	   	top: 20px;
+	   	width: 130px;
+	   	height: 130px;
+	   	overflow-y: auto;
+	   	background-color: white;
+	   	transition-duration : 500ms;
+	   	font-size: 13px;
+   		
+   		
+	   	
+   }
+   #id_like { 
+	   position: relative;
+	   font-size: 1em; 
+	   
    
-  
+   }
+   
+   #id_like:hover #likeListContainer {
+   		opacity: 1;
+   	}  
+   	
+   	#cmtTable {
+   		width: 700px;
+   	}
+   	#cmtTable img {
+   		width: 100%; 
+   	}
+	.cmtCtnt { width: 40%; }
+	.cmtUser { width: 25%; }
+	.cmtRdt { width: 17%; }
+	.cmtBtn { width: 18%; }
+	
+	.cmtBtnContainer { text-align: center; }
 </style>
 </head>
 <body>
@@ -92,6 +131,30 @@
 					<span class="material-icons">favorite</span>
 				</c:if>
 			</div>
+			<div>
+				<c:if test="${data.like_cnt != 0}">
+					<div id="id_like" class = "pointerCursor">좋아요 : ${data.like_cnt}개
+							<div id="likeListContainer" >
+								<c:forEach  items="${likeList}" var="item">
+									<div>
+										<div class="containerPImg">
+										<c:choose>
+											<c:when test="${item.profile_img != null}">
+												<img class="pImg" src="/img/user/${item.i_user}/${item.profile_img}">
+											</c:when>
+											<c:otherwise>
+												<img class="pImg" src="/img/default_profile.jpg">
+											</c:otherwise>
+										</c:choose>
+									</div>
+									${item.nm}
+								</div>
+							</c:forEach>
+							</div>
+					</div>
+				</c:if>
+				
+			</div>
 		</div>
 
 
@@ -99,8 +162,6 @@
 			<form id="cmtFrm" action="/board/cmt" method="post">
 				<input type="hidden" name="i_cmt" value="0">						<%//0이넘어가거나 빈칸이넘어가면 등록  아니면 수정%>
 				<input type="hidden" name="i_board" value="${data.i_board}">
-			
-				
 				<div>
 					<input type="text" id="cmt" name="cmt" placeholder="댓글내용">
 					<input type="submit" id="cmtSubmit" value="등록">
@@ -109,12 +170,12 @@
 			</form>
 		</div>
 		<div class="marginTop30">
-			<table>
+			<table id="cmtTable">
 				<tr>
-					<th>내용</th>
-					<th>글쓴이</th>
-					<th>등록일</th>
-					<th>비고</th>
+					<th  class="cmtCtnt">내용</th>
+					<th class="cmtUser">글쓴이</th>
+					<th class="cmtRdt">등록일</th>
+					<th class="cmtBtn">비고</th>
 				</tr>
 				<c:forEach items="${cmtList}" var="item">
 					<tr>
@@ -133,7 +194,7 @@
 							${item.nm}
 						</td>
 						<td>${item.m_dt}</td>
-						<td>
+						<td class="cmtBtnContainer">
 							<c:if test="${item.i_user == loginUser.i_user}">
 								<button onclick="clkCmtDel(${item.i_cmt})">삭제</button>
 								<button onclick="clkCmtMod(${item.i_cmt}, '${item.cmt}')">수정</button>

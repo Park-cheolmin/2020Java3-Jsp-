@@ -63,7 +63,7 @@
 	
 	<div class = "container">
 		<div class = "user">${loginUser.nm}님 환영합니다.
-			<a href="/profile">프로필</a>
+			<a href="/profile"><button>프로필</button></a>
 			<a href="/logout"><button  class = " outbutton ">로그아웃</button></a>
 		</div>
 		<div class = "user">
