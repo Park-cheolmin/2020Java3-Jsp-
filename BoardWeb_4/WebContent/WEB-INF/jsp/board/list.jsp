@@ -54,6 +54,42 @@
 	-webkit-background-clip: text;
   	-webkit-text-fill-color: transparent;
   	}
+  	
+#likeListContainer {	
+		display: none;		
+		padding: 10px;		
+		border: 1px solid #bdc3c7;
+		position: absolute;
+		left: 0px;
+		top: 30px;
+		width: 130px;
+		height: 200px;
+		overflow-y: auto;
+		background-color: white !important;
+	}	
+		
+	.profile {
+		background-color: white !important;
+		display: inline-block;	
+		width: 25px;
+		height: 25px;
+	    border-radius: 50%;
+	    overflow: hidden;
+	}		
+	
+	.likeItemContainer {
+		display: flex;
+		width: 100%;
+	}
+	
+	.likeItemContainer .nm {
+		background-color: white !important;
+		margin-left: 7px;
+		font-size: 0.7em;
+		display: flex;
+		align-items: center;
+	}
+
 	
    
    
@@ -104,11 +140,11 @@
 					<th>작성 날짜</th>		
 				</tr>
 				<c:forEach items="${list}" var="item">
-					<tr class="itemRow" onclick="moveDetail(${item.i_board})">
-						<td>${item.i_board}</td>
-						<td>${item.title}(${item.cmt_cnt})</td>
+					<tr class="itemRow">
+						<td onclick="moveDetail(${item.i_board})">${item.i_board}</td>
+						<td onclick="moveDetail(${item.i_board})">${item.title}(${item.cmt_cnt})</td>
 						<td>${item.hits}</td>
-						<td>${item.like_cnt}</td>
+						<td><span onclick="getLikeList(${item.i_board}, ${item.like_cnt}, this)">${item.like_cnt}</span></td>
 						<td>
 								<c:if test="${item.yn_like == 0 }">
 									<span class="material-icons">favorite_border</span>
@@ -161,7 +197,66 @@
 			</c:forEach>
 		</div>
 		
+		<div id="likeListContainer"></div>
+		<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 		<script>
+		
+		let beforeI_board = 0 
+		function getLikeList(i_board, cnt, span) {
+			console.log("i_board : " + i_board)
+			if(cnt == 0) { return }
+			
+			if(beforeI_board == i_board) {
+				likeListContainer.style.display = 'none'
+				return
+			} else if(beforeI_board != i_board) {
+				beforeI_board = i_board
+				likeListContainer.style.display = 'unset'
+			}			
+			
+			
+			const locationX = window.scrollX + span.getBoundingClientRect().left 
+			const locationY = window.scrollY + span.getBoundingClientRect().top + 30
+			
+			likeListContainer.style.left = `\${locationX}px`
+			likeListContainer.style.top = `\${locationY}px`
+					
+			likeListContainer.style.opacity = 1
+			likeListContainer.innerHTML = ""
+			
+			
+			axios.get('/board/like', {
+				params: {
+					i_board: i_board//key, 변수명이 같을때는 이렇게 사용, 원래는 i_board: i_board 이렇게 해야 함
+				}
+			}).then(function(res) {				
+				if(res.data.length > 0) {					
+					for(let i=0; i<res.data.length; i++) {
+						const result = makeLikeUser(res.data[i])
+						likeListContainer.innerHTML += result
+					}
+				}
+			})
+		}
+			
+			function makeLikeUser(one) {
+				const img = one.profile_img == null ?
+						'<img class="pImg" src="/img/default_profile.jpg">'
+						:
+						`<img class="pImg" src="/img/user/\${one.i_user}/\${one.profile_img}">`
+				
+				const ele = `<div class="likeItemContainer">
+					<div class="profileContainer">
+						<div class="profile">
+							\${img}  
+						</div>
+					</div>
+					<div class="nm">\${one.nm}</div>
+				</div>`
+				
+				return ele
+			}
+			
 		 	function changeRecordCnt() {
 		 		selFrm.submit()
 		 	}
