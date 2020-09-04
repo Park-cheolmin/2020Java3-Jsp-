@@ -24,7 +24,6 @@ public class BoardLikeSer extends HttpServlet {
 		int i_board = MyUtils.getIntParameter(request, "i_board");
 		
 		List<BoardDomain> likeList = BoardDAO.selBoardLikeList(i_board);
-		
 		Gson gson = new Gson();
 		
 		String json = gson.toJson(likeList);
