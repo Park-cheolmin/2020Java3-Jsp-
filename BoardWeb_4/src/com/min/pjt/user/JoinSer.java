@@ -34,6 +34,7 @@ public class JoinSer extends HttpServlet {
 		param.setNm(nm);
 		param.setEmail(email);
 		
+		
 		int result = UserDAO.insUser(param);
 		System.out.println("result : "+ result);
 		
