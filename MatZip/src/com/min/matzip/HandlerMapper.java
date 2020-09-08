@@ -18,10 +18,6 @@ public class HandlerMapper {
 			return "405"; //Error
 		}
 		
-		if("ajax".equals(uriArr[1])) {
-			return "ajax";
-		}
-		
 		switch(uriArr[1]) {
 		case ViewRef.URI_USER:
 			switch(uriArr[2]) {
