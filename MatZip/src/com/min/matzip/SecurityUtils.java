@@ -4,8 +4,22 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
-public class SecurityUtils {
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
+import com.min.matzip.vo.UserVO;
+
+public class SecurityUtils {
+	
+	public static UserVO getloginUser(HttpServletRequest request) {
+		HttpSession hs = request.getSession();
+		return (UserVO)hs.getAttribute(Const.LOGIN_USER);
+	}
+	
+	public static boolean isLogout(HttpServletRequest request) {
+		return getloginUser(request) == null;
+	}
+	
 	public static String generateSalt() {
 		Random random = new Random();
 
@@ -53,5 +67,7 @@ public class SecurityUtils {
 
 		return result;
 	}
+	
+	
 
 }

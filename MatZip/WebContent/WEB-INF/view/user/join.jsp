@@ -18,10 +18,10 @@
 	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 	<script>
 		function chkId() {
-			const user_id = frm.user_id.value
+			const user_id = frm.user_id.value           //좋아요선택시 새창(refresh)를 하지않기위해 ajax통신 사용
 			axios.get('/user/ajaxIdChk', {
 				params: {
-					user_id
+					'user_id' : user_id //변수명과 키값이같을때는 user_id만 써도됨
 				} 
 			}).then(function(res) {
 				console.log(res)

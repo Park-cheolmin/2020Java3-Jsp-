@@ -1,7 +1,9 @@
 package com.min.matzip.user;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
+import com.min.matzip.CommonUtils;
 import com.min.matzip.Const;
 import com.min.matzip.ViewRef;
 import com.min.matzip.vo.UserVO;
@@ -40,7 +42,10 @@ public class UserController { //넘어온값을 담아서 보내는 역할 까�
 		
 		int result = service.login(param); 
 		
-		if(result == 1) {
+		if(result == 1) { //로그인 성공, 세션에다가 넣어줘야함
+			HttpSession hs = request.getSession();
+			hs.setAttribute(Const.LOGIN_USER, param);
+			
 			return "redirect:/restaurant/restMap";
 		} else {
 			return "redirect:/user/login?user_id=" + user_id + "&error=" + result;
@@ -78,6 +83,13 @@ public class UserController { //넘어온값을 담아서 보내는 역할 까�
 		int result = service.login(param);
 		
 		return String.format("ajax:{\"result\": %s}", result);
+	}
+	
+	public String logout(HttpServletRequest request) {
+		HttpSession hs = request.getSession();
+		hs.invalidate();//session에있는걸 모두 지우는기능
+		
+		return  "redirect:/user/login";
 	}
 	
 }

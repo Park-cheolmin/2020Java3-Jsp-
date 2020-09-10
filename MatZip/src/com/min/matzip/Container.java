@@ -29,6 +29,13 @@ public class Container extends HttpServlet {
 	}
 	
 	private void proc(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		String routerCheckResult = LoginChkInterceptor.routerChk(request);
+		if(routerCheckResult != null) {
+			response.sendRedirect(routerCheckResult);
+			return;
+		}
+		
 		String temp = mapper.nav(request); // 템플릿 파일명이 넘어옴
 		
 		if(temp.indexOf(":") >=0) {
