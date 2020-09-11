@@ -1,5 +1,5 @@
 package com.min.matzip;
-
+//연결시켜주는 역할
 import javax.servlet.http.HttpServletRequest;
 
 import com.min.matzip.restaurant.RestaurantController;
@@ -42,6 +42,12 @@ public class HandlerMapper {
 				switch(uriArr[2]) {
 					case "restMap":
 						return restCon.restMap(request); //메소드호출
+					case "restReg":
+						return restCon.restReg(request);
+					case "restRegProc":
+						return restCon.restRegProc(request);
+					case "ajaxGetList":
+						return restCon.ajaxGetList(request);
 				}
 		}
 		return "404";	//NotFound
