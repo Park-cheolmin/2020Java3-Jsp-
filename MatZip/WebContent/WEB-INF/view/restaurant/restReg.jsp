@@ -6,11 +6,11 @@
 		<form id="frm" action="/restaurant/restRegProc" method="post" onsubmit="return chkFrm()">
 			<div><input type="text" name="nm" placeholder="가게명"></div>
 			<div>
-				<input type="text" name="addr" placeholder="주소" onchange="changeAddr">
+				<input type="text" name="addr" placeholder="주소" onchange="changeAddr" style="width:200px;">
 				<button type="button" onclick="getLatLng()">좌표 가져오기</button><span id="resultGetLatLng"></span>
 			</div>
-			<input type="hidden1" name="lat" value="0">
-			<input type="hidden1" name="lng" value="0">
+			<input type="hidden" name="lat" value="0">
+			<input type="hidden" name="lng" value="0">
 			<div>
 				카테고리 : 
 				<select name="cd_category">
@@ -68,15 +68,14 @@
 				if (status === kakao.maps.services.Status.OK) {
 			        console.log(result[0]);
 			        
-			        if(result.length > 0){
-			        	resultGetLatLng.innertext = 'V'
-				        frm.lat.value = result[0].y
+			        if(result.length > 0) {
+			        	resultGetLatLng.innerText = 'V'
+			        	frm.lat.value = result[0].y
 				        frm.lng.value = result[0].x
-			        }
+			        }			        
 			    }	
 			});			
 		}
-		
 	</script>
 </div>
 
