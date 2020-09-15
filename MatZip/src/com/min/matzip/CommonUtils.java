@@ -3,6 +3,8 @@ package com.min.matzip;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import com.oreilly.servlet.MultipartRequest;
+
 public class CommonUtils {
 	public static int parseStringToInt(String str) {
 		try {
@@ -19,6 +21,10 @@ public class CommonUtils {
 	}
 	
 	public static int getIntParameter(String key, HttpServletRequest request) {
+		return parseStringToInt(request.getParameter(key));
+	}
+	
+	public static int getIntParameter(String key, MultipartRequest request) {
 		return parseStringToInt(request.getParameter(key));
 	}
 	
