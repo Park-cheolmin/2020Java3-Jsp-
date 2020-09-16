@@ -8,11 +8,13 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.Part;
 
 import com.google.gson.Gson;
 import com.min.matzip.CommonUtils;
 import com.min.matzip.FileUtils;
 import com.min.matzip.vo.RestaurantRecommendMenuVO;
+import com.min.matzip.vo.RestaurantVO;
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
@@ -39,7 +41,36 @@ public class RestaurantService {
 		return dao.selRest(param);
 	}
 	
-	public int addRecMenus(HttpServletRequest request) {
+	public int addMenus(HttpServletRequest request) { //메뉴 
+		int i_rest = CommonUtils.getIntParameter("i_rest", request);
+		System.out.println("i_rest : " + i_rest);
+		String savePath = request.getServletContext().getRealPath("/res/img/restaurant");
+		String tempPath = savePath + "/"+ i_rest + "/menu";//임시	
+		FileUtils.makeFolder(tempPath);
+		
+		RestaurantRecommendMenuVO  param = new RestaurantRecommendMenuVO();
+		param.setI_rest(i_rest);
+
+        try {
+        	for (Part part : request.getParts()) {
+                String fileNm = part.getSubmittedFileName();
+                System.out.println("fileName : " + fileNm);
+                if(fileNm != null) {
+                	part.write(tempPath + "/" + fileNm);	//파일 저장
+                	param.setMenu_pic(fileNm);
+                	dao.insMenu(param);
+                }
+            }      
+        } catch(Exception e) {
+        	e.printStackTrace();
+        }
+
+
+
+		return i_rest;
+	}
+	
+	public int addRecMenus(HttpServletRequest request) { //추천메뉴
 		String savePath = request.getServletContext().getRealPath("/res/img/restaurant"); //getRealPath() : 지금현재 서버에서 돌아가고 있는  주소값(절대경로(c:~~))을 리턴, 임시로 둔다
 		String tempPath = savePath + "/temp";	
 		FileUtils.makeFolder(tempPath); //폴더가 없다면 폴더 생성 
@@ -89,7 +120,7 @@ public class RestaurantService {
 
 				if(originFileNm != null) { //파일 선택을 안했으면 null이 넘어옴
 					String ext = FileUtils.getExt(originFileNm);
-					String saveFileNm = UUID.randomUUID() + ext; 
+					String saveFileNm = UUID.randomUUID() + ext; //UUID로 이미지 이름을 바꾸는 이유 (중복방지, 한글이미지파일이올라올수있음, 
 
 					System.out.println("saveFileNm : " + saveFileNm);				
 					File oldFile = new File(tempPath + "/" + originFileNm);
@@ -111,6 +142,10 @@ public class RestaurantService {
 			}	
 		}
 		return i_rest;
+	}
+	
+	public List<RestaurantRecommendMenuVO> getMenuList(int i_rest) {
+		return dao.selMenuList(i_rest);
 	}
 	
 	public List<RestaurantRecommendMenuVO> getRecommendMenuList(int i_rest) {

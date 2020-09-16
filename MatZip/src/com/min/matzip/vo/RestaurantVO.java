@@ -1,4 +1,4 @@
-package com.min.matzip.restaurant;
+package com.min.matzip.vo;
 
 public class RestaurantVO {
 	private int i_rest;

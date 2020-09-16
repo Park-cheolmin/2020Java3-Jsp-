@@ -11,13 +11,17 @@ import com.min.matzip.vo.UserVO;
 
 public class SecurityUtils {
 	
-	public static UserVO getloginUser(HttpServletRequest request) {
+	public static int getLoginUserPk(HttpServletRequest request) {
+		return getLoginUser(request).getI_user();
+	}
+	
+	public static UserVO getLoginUser(HttpServletRequest request) {
 		HttpSession hs = request.getSession();
 		return (UserVO)hs.getAttribute(Const.LOGIN_USER);
 	}
 	
 	public static boolean isLogout(HttpServletRequest request) {
-		return getloginUser(request) == null;
+		return getLoginUser(request) == null;
 	}
 	
 	public static String generateSalt() {

@@ -1,5 +1,7 @@
 package com.min.matzip.restaurant;
 
+import com.min.matzip.vo.RestaurantVO;
+
 public class RestaurantDomain extends RestaurantVO{
 	private String userNm;
 	private int cntHits;
